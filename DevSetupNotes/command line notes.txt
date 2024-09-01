@@ -1,0 +1,184 @@
+// tell git to auto set upstreams
+git config --global --add --bool push.autoSetupRemote true
+
+winget install Microsoft.DotNet.SDK.8
+download the debugger for c# here: latest release:
+https://github.com/Samsung/netcoredbg/releases
+unzip and put in home directory
+
+
+/// General useful commands
+in windows: ctrl + shift + click pinned taskbar item: opens it in admin mode
+cd /mnt/c/Users/georg/OneDrive/Documents/git/KubernetesPlayground
+kind
+kind create cluster --name k8s-course
+kubectl get nodes
+kubectl get pods --all-namespaces
+kind delete cluster --name k8s-course
+
+
+
+
+
+
+## todo: EVERYTHING BELOW HERE LOOKS LIKES ITS WINDOWS SETUP STUFF
+
+
+
+
+
+/// Powershell
+
+// To set up powershell to remember your place when opening new screens
+explorer $PROFILE	// See where the ps profile is kept
+notepad $PROFILE	// Open the profile in notepad
+
+// Alias examples that can be put in powershell profile
+set-alias vim nvim
+set-alias k C:\ProgramData\chocolatey\bin\kubectl.exe
+
+// Good keybinds are found here: https://learn.microsoft.com/en-us/windows/terminal/panes
+alt shift + => Split out new shell vertically
+alt shift - => Split out new shell horizontally
+ctrl shift w => Close current shell
+alt arrows => Change focused shell
+ctrl shift t => Whole new tab
+
+
+
+/// SETUP VIM
+
+// Install neovim
+winget install Neovim.Neovim
+
+// Install Zim (tree sitter uses it as a c compiler)
+winget search zig (check if the zig.zig version is at least versio 0.12.0, atow only the nightly is so install the nightly)
+winget install zig.zig.nightly
+zig env (if it prints some stuff rather than complain it cant find its install path then it's good)
+
+// Install grep (used by telescope to grep search files)
+winget install BurntSushi.ripgrep.MSVC
+
+// Get my personal config files
+TODO
+
+
+// Useful tidbits
+// See vim config location, copy past my own vim configs here that include Lazy package manager
+:help config
+
+// Open lazy (close with q)
+:Lazy
+
+// Check everything is working in Lazy
+:checkhealth lazy
+
+
+
+//// SETUP FROM NOTHING STUFF
+
+/// Install Terminal and Powershell (https://github.com/microsoft/terminal) (https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4)
+winget install --id Microsoft.WindowsTerminal -e --source winget
+winget search Microsoft.PowerShell
+winget install --id Microsoft.Powershell --source winget
+// open terminal, settings, then make it the default shell and save
+
+
+// Install Oh my posh, nerdfont and terminal icons for some spice
+winget install --id JanDeDobbeleer.OhMyPosh -e --source winget
+// open the ps profile
+notepad $PROFILE
+// add the code that picks a theme and runs posh: 
+// default: oh-my-posh --init --shell pwsh --config ~/jandedobbeleer.omp.json | Invoke-Expression
+// a simple remote one: oh-my-posh init pwsh --config 'https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/illusi0n.omp.json' | Invoke-Expression
+// restart terminal
+oh-my-posh font install
+// choose CascadiaCode
+// ctrl + shift + , to open the ps settings file
+// add the font to the settings in the profile default like so:
+"profiles": 
+{
+    "defaults": 
+    {
+        "font": 
+        {
+            "face": "CaskaydiaCove Nerd Font"
+        }
+    },
+    ...
+}
+// install terminal icons
+Install-Module -Name Terminal-Icons -Repository PSGallery
+// then open PS profile again and add this line to run it
+Import-Module -Name Terminal-Icons
+
+
+
+
+
+
+
+
+
+
+/// Work only Windows, manually installed Rider before anything else, 
+// Install Azure cli, did this after installing wsl
+winget install -e --id Microsoft.AzureCLI --source winget
+// Install Microsfot Teams
+winget install -e --id Microsoft.Teams --source winget
+// Install Slack
+winget install -e --id SlackTechnologies.Slack --source winget
+// Install Postman
+winget install -e --id Postman.Postman --source winget
+// Install VSCode
+winget install -e --id Microsoft.VisualStudioCode --source winget
+// Install Terraform
+winget install -e --id Hashicorp.Terraform
+// Install Terraform docs (for generating docs)
+winget install -e --id Terraform-docs.Terraform-docs 
+// Install Helm to do stuff like Helm update --install etc or Helm list --namespace bleh
+winget install -e --id Helm.Helm 
+
+/// Install k9s
+// this fills the gap so the local kube config file gets the credentials needed to talk to an azure cluster
+winget install -e --id Microsoft.Azure.Kubelogin --source winget
+// k9s itself
+winget install -e --id Derailed.k9s --source winget
+// Then ensure these 3 functions are in powershell profile and run each functionby name maually to populate the kube config file
+# Login to preview aks cluster
+function PreviewAks {
+    az aks get-credentials --name preview-axicore-aks --resource-group core-rg --subscription AxiCorp-Development --overwrite-existing
+}
+
+# Login to stagin aks cluster
+function StagingAks {
+    az aks get-credentials --name stg-axicore-aks --resource-group core-rg --subscription AxiCorp-Staging --overwrite-existing
+}
+
+# Login to production aks cluster
+function ProductionAks {
+    az aks get-credentials --name prod-axicore-aks --resource-group core-rg --subscription AxiCorp-Product --overwrite-existing
+}
+
+// Install Git
+winget install -e --id Git.Git --source winget
+
+// Exclude git folder from firewall
+Add-MpPreference -ExclusionPath 'C:\Users\George.Mason\git\'
+
+
+
+
+
+/// VSCode
+// Install VSCode in windows, open wsl2 and anywhere type 'code .' to open a vscode sever that the windows version connects to
+// In windows version install the extensions: 'WSL' (by MS), (maybe these 3, only needed in wsl but may need a copy is windows too to work)'Kubernetes' (by MS), 'Docker' (by MS), 'YAML' (by Red Hat)
+// In this wsl2 connected version install the extensions: 'WSL' (by MS), 'Kubernetes' (by MS), 'Docker' (by MS), 'YAML' (by Red Hat)
+// In windows version install the extension: 'C#' but NOT the dev kit, this part contains just the LSP and isn't wrapped in in munny grubbing licensing yet so is fine to use
+
+
+// Install Azure Data Studio on Windows
+winget install "azure data studio"
+
+// Fix the blinding light theme in ADS
+// Bottom left cog, Themes, Colour Theme, Dark Modern

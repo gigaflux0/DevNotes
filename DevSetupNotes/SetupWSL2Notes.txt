@@ -1,0 +1,54 @@
+
+## Install WSL2 and Ubuntu
+
+// check if you have it already
+wsl --version
+
+// if Windows is less than Windows 10 build 19041, enable these feature flags needed
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+
+// install wsl and the default distro (Ubuntu) (if wsl is installed at this point a restart is needed before continuing)
+wsl --install (or wsl --update)
+
+// list installed distros
+wsl -l -v
+
+// if the version on your distro says 1 instead of 2, its using the wrong wsl version so run this
+wsl --set-version Ubuntu 2
+
+
+## Install Arch Linux
+
+// Currently only available in Microsoft store, install from there and open from there. Once username and password set it's ready.
+// after install
+sudo pacman -S neofetch
+vim .bashrc
+(add new line at bottom with this) neofetch
+
+
+## Uninstall a Linux distro
+
+// list installed windows apps, filtering by name
+winget list --name Ubuntu
+
+// uninstall distro
+winget uninstall Ubuntu
+
+// unregister distro from wsl and delete all associated data
+wsl --unregister Ubuntu
+
+// check it's gone
+wsl -l -v
+
+
+## Useful commands
+
+// list distros online that Microsoft curates
+wsl -l -o
+
+// install specific distro
+wsl --install [Distro]   (example: wsl --install Ubuntu)
+
+// force all distros to stop
+wsl --shutdown

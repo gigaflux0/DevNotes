@@ -1,0 +1,85 @@
+
+/// Install and run Zen Browser
+sudo apt-get update
+sudo apt install firefox
+firefox (navigate to zen browser site, download linux app image then close firefox)
+cd snap/firefox/common/Downloads
+chmod a+x zen-specific.AppImage
+./zen-specific.AppImage
+
+
+
+todo: THESE NEED CURATED!
+I want them to details, setting up
+- docker
+- kind
+- neovim
+- terminal niceness stuff similar to oh my posh
+- maybe lazygit
+
+
+
+## Install docker engine in linux
+// Run the commands listed in 'Install using the apt repository' here: https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
+
+// add your local user in the docker group, so no sudo is needed for running docker
+sudo usermod -aG docker $(whoami)
+
+// reload group settings
+newgrp docker
+
+
+## Install kind in linux
+// run this in linux to determine which to use
+uname -m
+
+// Run the commands listed in 'OnLinux' here, picking the correct first line based on above: https://kind.sigs.k8s.io/docs/user/quick-start/#installing-from-release-binaries
+// The flag part of the curl command can be removed before running as this can cause a permission error
+
+
+/// Install kubectl
+// Run the commands for curl listed here: https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-binary-with-curl-on-linux
+// The validation step can just be skipped
+
+
+/// Install kubectx and kubens
+// Run the 'Example installation steps; lister here: https://github.com/ahmetb/kubectx?tab=readme-ov-file#manual-installation-macos-and-linux
+
+
+/// Install brew and k9s (may not actually need brew as snap can be used which is on latest ubunut releases)
+// Run the one line command found here: https://brew.sh/
+// Then run the first 3 lines here to add a path, then the 4th to install a hello: https://docs.brew.sh/Homebrew-on-Linux
+// Then run the lines below to install k9s, afterwards the command 'k9s' can start it to check it worked
+brew install k9s
+
+
+/// Install lazy docker (lazydocker opens it after install)
+brew install lazydocker
+
+
+
+/// Sanity checks
+docker info
+kind version
+kubectl version
+sudo docker run hello-world
+kind create cluster --name bleh
+kind delete cluster --name bleh
+
+// docker heavy status
+sudo service docker status
+// docker logs
+sudo cat /var/log/docker.log
+
+
+
+
+// Linux commands
+df
+la	// this is an alias for 'ls -A'
+cd	// just cd alone, this goes to home/<username>/
+cd /	// this goes to the root directory
+alias	// list aliases
+ctrl + r	// Reverse history search
+systemctl stop nginx	// Stop a running service
+systemctl start nginx	// Start a service

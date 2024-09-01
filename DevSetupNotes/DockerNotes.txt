@@ -1,0 +1,209 @@
+
+## Docker Notes
+
+/// Random Docker Notes
+
+// Run up a ms sql server db
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Bleh1234!" -p 1433:1433 mcr.microsoft.com/mssql/server:2022-latest
+// when connecting to this with azure stat studio, these are the connection settings to set:
+Connection type: Microsoft SQL Server
+Input: Parameters
+Server: 127.0.0.1,1433 (using localhost doesn't seem to work when the servers in wsl2, the local address can also be swapped for the address linux shows when executing 'localhost -I' in WSL2)
+Authentication type: SQL Login
+User name: sa
+Password: Bleh1234!
+Encrypt: Optional
+
+// Build a dockerfile located in windows from linux example!
+docker build -f ./WebApplication1/Dockerfile -t apiyo .
+// This is the same except as a pipe, cd to the project folder, run the docker build on the docker file then cd back to linus home
+cd /mnt/e/Users/georg/source/repos/WebApplication1 && docker build -f ./WebApplication1/Dockerfile -t apiyo . && cd
+
+// Note: A Blazor wasm frontend just creates static files so you can publish them to just be served by nginx for max speed
+
+netstat -an (in powershell list all the listening ports)
+
+// Note: Remember if publishing docker images in release mode but swagger is set to only run in dev mode, there will be no swagger page to look at at localhost:<port number>/swagger/index.html
+
+
+
+/// Docker commands
+// When stating <container id> only the first 3 digits are needed
+
+// Download nginx image by implicitly doing a docker pull if the image doesn't exist locally, then runs the container from that image
+docker run nginx
+
+// List containers, '-a' flag to also see stopped containers
+docker ps
+
+// Stop container
+docker stop <container id>
+
+// Remove container
+docker rm <container id>
+
+// Remove container that is running forcefully with sigkill
+docker rm -f <container id>
+
+// Publish container port to host (left of the colon is the port to access it outside the container, right is port inside container that software is listening to (nginx by default listens to port 80))
+docker run -p 80:80 nginx
+
+// Publish container ports to host for when multiple ports are used by the app (in this example 3-management is the tag name, if you don't specify one then 'latest' is the default tag name in docker)
+docker run -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+
+// Publish container in detached mode (-d), running it in the background and giving shell control back
+docker run -d -p 80:80 nginx
+
+// Logs of container
+docker logs <container id>
+
+// Get help with specific command (logs in this example)
+docker logs --help
+
+// Logs with follow to get live updates
+docker logs -f <container id>
+
+// Attach shell back onto detached container
+docker attach <container id>
+
+// Shell into a container in interactive terminal mode (sometimes if bash doesn't work just sh will)
+docker exec -it <container id> bash
+
+// Run a container with a shell into it and delete the container on exiting the shell, with a custom set network, and a custom dns name
+docker run -it --rm container-a --network network-a --hostname imadnsname alpine
+
+// Run just 1 command and come back from shelling into a container (ls in this case)
+docker exec -it <container id> ls
+
+// Install vim inside a container (first shell inside)
+apt-get update && apt-get install -y vim
+
+// Create a new image based off a container (if you change things in a container through shell and wanted a post changes image you can use this, but in reality this will likely never really be used when compose files are the standard)
+docker commit <container id> <new name like nginx-modified>
+
+// Pull image
+docker pull nginx
+
+// note: when doing dockel pull <x> the form can be <domain name>/image name, if no image name is given then it assumes the default docker hub
+// example: docker pull mcr.microsoft.com/mssql/server
+// example: danclarke.azurecr.io/myimage
+// for local dev when pulling images you want ones that publish to a port to be able to actually access them
+
+// Get local images
+docker images
+
+// Explicitly tag image (doing docker image after this will show a new repo with the name, the tag, but pointing still at the same image as the id you passed)
+docker tag <image id> <new image name:new or existing tag name (myimage:mytag) (nginx:v9999)>
+
+// Remove images or remove tags
+docker rmi nginx:v999	// remove tag
+docker rmi <image id>	// remove image
+
+// Inspect image to see image layers
+docker inspect nginx
+
+// Push an image up to the container image registry
+docker push <image name (eg api)>
+
+// Login to docker hub container image registry
+docker login 
+
+// Login to any container image registry including local example
+docker login myregistry.azurecr.io
+
+// Build a docker image where the localhost has access to the outside machines localhost
+docker build -f .\DockerCourseApi\Dockerfile --network host .
+
+// Compose, create and start containers in compose file (if run as detached, doing 'docker compose up' again will reattach to the running containers)
+docker compose up (-d for detached) (--build makes sure to build the images before running them up)
+
+// Compose, create and start one container in the compose file
+docker compose up <service name (eg api)>
+
+// Compose, create and start two container in the compose file (in eg runs the database up then seeds it)
+docker compose up <service name (eg database)> <service name (eg database-seed)>
+
+// note: In a docker compose file, each service name acts as a dns entry. So when targeting communication across containers localhost can just be changed to the service name
+// example: "Server=tcp:databaseyo;Initial Catalog=" etc etc where the database is in a container with the name databaseyo and this connection string is defined in another containers app in the same compose trying to access that database
+
+// Compose, run one service in it
+docker compose run <service name (eg api)>
+
+// List only the running containers from the compose
+docker compose ps
+
+// Dump out the logs from all the containers in the compose
+docker compose logs 
+
+// Dump out the logs for one service in the compose
+docker compose logs <service name (service name is set in the compose file, exacmple: apiyo)>
+
+// Stop the containers and delete them
+docker compose down
+
+// note: In a docker compose file, each service name acts as a dns entry. So when targeting communication across containers localhost can just be changed to the service name
+// example: "Server=tcp:databaseyo;Initial Catalog=" etc etc where the database is in a container with the name databaseyo and this connection string is defined in another containers app in the same compose trying to access that database
+
+// Build docker files using a compose
+docker compose build
+
+// Push the images defined in a compose to registry (in the compose file the images muse have the correct prefix name (eg image: dometraindockercourse/frontend))
+docker compose push
+
+// Volume, create a colume
+docker volume create dometrain
+
+// Volume, list volumes
+docker volume ls
+
+// Volume, get more information on them
+docker volume inspect dometrain
+
+// Volume, remove a colume
+docker volume rm dometrain
+
+// Delete containers in a compose, and their associated volumes
+docker compose down -v
+
+// note: 'docker run --name sqlserver-withvol -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Dometrain#123" -p 1433:1433 -d -v sqldb-data:/var/opt/mssql mcr.microsoft.com/mssql/server:2022-latest'
+// in the above example, '-v sqldb-data:/var/opt/mssql' the left is the volume that's outside the container, the right is the directory inside the container
+// If the volume exists it will use that volume, if it doesn't then it will create it
+
+// note: bind mount: 'docker run --name nginx-withvol -p 1234:80 -v ${pwd}/html:/usr/share/nginx/html nginx'
+// in the above the pwd is the current directory, it will create a new folder named html that is the bind location
+// note: nginx in particular looks by default for an index.html, putting a file with this name in here will load it
+
+// Security: Display known vulnerabilities for the most recently built image
+docker scout cves 
+
+// Security: Display known vulnerabilities for specific image
+docker scout cves alpine:3.15.7
+
+// Security: Display vulnerabilites where a fix exists in a later version
+docker scout cves --only-fixed
+
+// Security: dockerfile lines that make sure anyone in the container doesn't have root privelages
+RUN adduser --disabled-password --gecos '' appuser
+USER appuser
+
+// Network: list networks
+docker network ls
+
+// Network: Inspect a network, note: bridge is the default network
+docker network inspect bridge
+
+// Network: Create a new custom network
+docker network create <a name for the network (eg, network-a)>
+
+// Network: A container can only run with 1 container but it can have more attached after running
+docker network connect network-a container-b
+
+// Network: Disconnect a network from a container
+docker network disconnect network-a container-b1
+
+// Network: Run container connected to the host machines localhost (linux only), network host is the main part
+docker run -it --rm --network host curlimages/curl sh
+
+// Network: Note: In windows only as network host is all you need in linux, docker on 
+// windows adds a file at c/windows/system32/drivers/etc/hosts docker desktop adds 
+// hosts.docker.internal as an address containers can use to talk to the local host on windows
