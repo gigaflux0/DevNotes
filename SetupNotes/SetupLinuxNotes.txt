@@ -1,4 +1,21 @@
 
+/// Clone down the DevNotes repo and navigate to the setup bash script
+mkdir git
+cd git
+git clone https://github.com/gigaflux0/DevNotes.git
+cd DevNotes/SetupNotes/
+// Config git to use the credential manager in windows (git must be installed in windows via winget for this to work)
+git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"
+// Config git just on this repo (can skip this step if we never want to push to remote)
+git config user.email "georgemason321@hotmail.com" && git config user.name "georg"
+
+
+
+
+
+
+
+
 /// Install and run Zen Browser
 sudo apt-get update
 sudo apt install firefox
