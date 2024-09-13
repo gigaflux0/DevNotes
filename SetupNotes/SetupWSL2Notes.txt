@@ -1,4 +1,33 @@
 
+// install zsh, run it, and have it populate the default .zshrc
+sudo apt install zsh
+zsh
+2
+
+// change default shell to zsh
+chsh -s /bin/zsh
+
+// oh my posh (first 2 lines might not be needed)
+sudo apt-get update
+sudo apt-get upgrade curl
+// install unzip, needed to install oh my posh
+sudo apt-get install unzip
+// install oh my posh
+curl -s https://ohmyposh.dev/install.sh | bash -s
+// add the oh-my-psoh command to the $PATH
+export PATH=$PATH:/home/gigaflux0/.local/bin
+// install nerd font
+oh-my-posh font install // Choose CascadiaCode from the list
+// start it
+vim .zshrc
+// Add the following line somewhere
+eval "$(oh-my-posh init zsh --config 'https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/illusi0n.omp.json')"
+// reload the profile
+exec zsh
+
+
+
+
 ## Install WSL2 and Ubuntu
 
 // check if you have it already
