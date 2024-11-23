@@ -17,8 +17,15 @@ install_and_configure_oh_my_posh () {
   echo "YOYO Finished installing oh-my-posh"
 
   echo "YOYO Adding oh-my-posh configuration to bashrc"
-  echo '' >> ~/.bashrc && echo '# Configure OhMyPosh' >> ~/.bashrc && echo 'eval "$(oh-my-posh --init --shell bash --config 'https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/illusi0n.omp.json')"' >> ~/.bashrc && exec bash
+  echo '' >> ~/.bashrc 
+  echo '# Add local bin to path so oh-my-posh command will work' >> ~/.bashrc 
+  echo 'export PATH=$PATH:/home/gigaflux0/.local/bin' >> ~/.bashrc 
+  echo '' >> ~/.bashrc 
+  echo '# Configure OhMyPosh' >> ~/.bashrc 
+  echo 'eval "$(oh-my-posh --init --shell bash --config 'https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/illusi0n.omp.json')"' >> ~/.bashrc
   echo "YOYO Finished adding oh-my-posh configuration to bashrc"
+  
+  exec bash
 }
 
 echo "Hello World!"
