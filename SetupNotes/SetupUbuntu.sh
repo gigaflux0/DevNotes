@@ -3,8 +3,24 @@
 # Command to manually use in a clean install to get this script ready to run
 # cd && mkdir git && cd git && git clone https://github.com/gigaflux0/DevNotes.git && cd DevNotes/SetupNotes/ && bash ./SetupUbuntu.sh
 
+# Manual step to set background image and style
+# Terminal > Settings > Ubuntu > Color scheme = Tango Dark ... Background image > Select an image, 20% opacity
+
 install_rider () {
   sudo snap install rider --classic
+}
+
+install_fastfetch () {
+  echo "YOYO Installing fastfetch"
+  sudo add-apt-repository ppa:zhangsongcui3371/fastfetch
+  sudo apt update
+  sudo apt install fastfetch
+  echo "YOYO Finished installing fastfetch"
+  echo "YOYO Adding fastfetch configuration to bashrc"
+  echo '' >> ~/.bashrc 
+  echo '# Run fastfetch on startup' >> ~/.bashrc 
+  echo 'fastfetch' >> ~/.bashrc 
+  echo "YOYO Finished adding fastfetch configuration to bashrc"
 }
 
 install_and_configure_oh_my_posh () {
@@ -34,6 +50,8 @@ echo "Hello World!"
 echo "YOYO running sudo apt-get update"
 sudo apt-get update
 echo "YOYO finished running sudo apt-get update"
+
+install_fastfetch
 
 install_and_configure_oh_my_posh
 
