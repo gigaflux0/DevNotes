@@ -6,6 +6,12 @@
 # cd && mkdir git && cd git && git clone https://github.com/gigaflux0/DevNotes.git && cd DevNotes/SetupNotes/ && bash ./SetupUbuntu.sh
 
 
+# Nuke and reset Ubuntu
+# winget uninstall --name Ubuntu
+# wsl --unregister Ubuntu
+# wsl --install Ubuntu
+
+
 # Manual step to set background image and style
 # Terminal > Settings > Ubuntu > Color scheme = Tango Dark ... Background image > Select an image, 20% opacity
 
@@ -47,18 +53,23 @@ install_and_configure_oh_my_posh () {
   echo 'eval "$(oh-my-posh --init --shell bash --config 'https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/illusi0n.omp.json')"' >> ~/.bashrc
   echo "YOYO Finished adding oh-my-posh configuration to bashrc"
   
-  exec bash
+  # exec bash
 }
 
 install_rider () {
+  echo "YOYO Installing rider"
   sudo snap install rider --classic
+  echo "YOYO Finished installing rider"
 }
 
 install_firefox () {
+  echo "YOYO Installing firefox"
   sudo apt install firefox
+  echo "YOYO Finished installing firefox"
 }
 
 install_docker () {
+  echo "YOYO Installing docker enginer"
   # Add Docker's official GPG key:
   sudo apt-get update
   sudo apt-get install ca-certificates curl
@@ -79,25 +90,33 @@ install_docker () {
   sudo usermod -aG docker $(whoami)
 
   # reload group settings
-  newgrp docker
+  # newgrp docker
+  echo "YOYO Finished installing docker engine"
 }
 
 install_kind () {
+  echo "YOYO Installing kind"
   curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.25.0/kind-linux-amd64
   chmod +x ./kind
   sudo mv ./kind /usr/local/bin/kind
+  echo "YOYO Finished installing kind"
 }
 
 install_kubectl_kubectx_kubens () {
+  echo "YOYO Installing kubectl kubectx kubens"
   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
   sudo git clone https://github.com/ahmetb/kubectx /opt/kubectx
   sudo ln -s /opt/kubectx/kubectx /usr/local/bin/kubectx
   sudo ln -s /opt/kubectx/kubens /usr/local/bin/kubens
+  echo "YOYO Finished installing kubectl kubectx kubens"
 }
 
 install_k9s () {
+  echo "YOYO Installing k9s"
   sudo snap install k9s
   sudo ln -s /snap/k9s/current/bin/k9s /snap/bin/
+  echo "YOYO Finished installing k9s"
 }
 
 echo "Hello World!"
